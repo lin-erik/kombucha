@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 
-const { prefix } = require('./config');
+const { prefix, token } = require('./config');
 
 const client = new Discord.Client();
 const cooldowns = new Discord.Collection();
@@ -33,4 +33,4 @@ client.on('message', message => {
   }
 });
 
-client.login('NTE4MTM1MjA1NzgxOTYyNzYy.DuMbqg.pSggOs_m68jZFUFOjEGbO4pgjTw');
+client.login(token);
