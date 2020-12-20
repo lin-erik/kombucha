@@ -2,11 +2,20 @@
   "name": "kombucha",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint": "./node_modules/.bin/eslint . --ext .js"
   },
   "dependencies": {
-    "discord.js": "^11.4.2"
+    "discord.js": "^12.5.1",
+    "sqlite": "^4.0.18",
+    "sqlite3": "^5.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.16.0",
+    "nodemon": "^2.0.6"
   }
 }

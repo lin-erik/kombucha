@@ -1,36 +1,50 @@
-const Discord = require('discord.js');
-const fs = require('fs');
+import { client } from './client/index.js';
+import { PIN_EMOJI } from './constants.js';
+import { pinMessage, removeMessage } from './helpers.js';
 
-const { prefix, token } = require('./config');
+client.once('ready', async () => {
+  console.log('Kombucha is now running!');
 
-const client = new Discord.Client();
-const cooldowns = new Discord.Collection();
-client.commands = new Discord.Collection();
-
-const commandFiles = fs.readdirSync('./commands');
-
-for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
-  client.commands.set(command.name, command);
-}
-
-client.once('ready', () => {
-  console.log('Bot is now running!');
+  setInterval(() => console.log("Kombucha heartbeat"), 300000);
 });
 
-client.on('message', message => {
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
+client.on('messageReactionAdd', async (message, user) => {
+  console.log('messageReactionAdd event triggered');
+  
+  try {
+    if (message.partial) {
+      console.log('Fetching uncached reaction');
+      await message.fetch();
+    }
 
-  const args = message.content.slice(prefix.length).split(' ');
-  const command = args.shift().toLowerCase();
+    if (message._emoji.name !== PIN_EMOJI) return;
+  } catch (error) {
+    return console.log('There was a problem fetching the reaction', error);
+  }
 
-  if (!client.commands.has(command)) return;
+  const reactions = message.message.reactions.cache.get(PIN_EMOJI);
+  if (reactions.count > 1) {
+    return message.users.remove(user);
+  }
+
+  await pinMessage(message.message, user);
+});
+
+client.on('messageReactionRemove', async (message, user) => {
+  console.log('messageReactionRemove event triggered');
 
   try {
-    client.commands.get(command).execute(message, args);
-  } catch (err) {
-    message.reply('There was an error while executing the command!', err);
+    if (message.partial) {
+      console.log('Fetching uncached reaction');
+      await message.fetch();
+    }
+
+    if (message._emoji.name !== PIN_EMOJI) return;
+  } catch (error) {
+    return console.log('There was a problem fetching the reaction', error);
   }
+
+  await removeMessage(message.message, user);
 });
 
-client.login(token);
+client.login(process.env.DISCORD_TOKEN);
