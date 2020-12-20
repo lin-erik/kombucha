@@ -47,6 +47,7 @@ client.on('messageReactionRemove', async (message, user) => {
     }
 
     if (message._emoji.name !== PIN_EMOJI) return;
+    if (!CHANNEL_WHITELIST.includes(message.message.channel.id)) return;
   } catch (error) {
     return console.log('There was a problem fetching the reaction', error);
   }
