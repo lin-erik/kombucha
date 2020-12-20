@@ -1,9 +1,12 @@
 import { client } from './client/index.js';
 import { PIN_EMOJI } from './constants.js';
+import { init } from './database/index.js';
 import { pinMessage, removeMessage } from './helpers.js';
 
 client.once('ready', async () => {
   console.log('Kombucha is now running!');
+
+  await init();
 
   setInterval(() => console.log("Kombucha heartbeat"), 300000);
 });

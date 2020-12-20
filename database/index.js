@@ -1,14 +1,14 @@
 import { open } from 'sqlite';
 import sqlite3 from 'sqlite3';
 
-const databasePath = './sqlite.db';
+import { DATABASE_PATH } from '../constants.js';
 
-let _db;
+let db;
 
-const _init = async () => {
+const init = async () => {
   try {
-    _db = await open({
-      filename: databasePath,
+    db = await open({
+      filename: DATABASE_PATH,
       driver: sqlite3.cached.Database,
     });
 
@@ -18,8 +18,4 @@ const _init = async () => {
   }
 }
 
-export const db = async () => {
-  if (!_db) await _init();
-
-  return _db;
-}
+export { db, init };
