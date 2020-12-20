@@ -19,7 +19,7 @@ const _init = async () => {
 }
 
 export const db = async () => {
-  if (!_db) await _init;
+  if (!_db) await _init();
 
   return _db;
 }
