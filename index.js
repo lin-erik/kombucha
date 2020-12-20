@@ -1,5 +1,5 @@
 import { client } from './client/index.js';
-import { PIN_EMOJI } from './constants.js';
+import { CHANNEL_WHITELIST, PIN_EMOJI } from './constants.js';
 import { init } from './database/index.js';
 import { pinMessage, removeMessage } from './helpers.js';
 
@@ -8,7 +8,10 @@ client.once('ready', async () => {
 
   await init();
 
-  setInterval(() => console.log("Kombucha heartbeat"), 300000);
+  setInterval(() => {
+    console.log('Kombucha heartbeat');
+    console.log('Current channels', client.channels);
+  }, 300000);
 });
 
 client.on('messageReactionAdd', async (message, user) => {
@@ -21,6 +24,7 @@ client.on('messageReactionAdd', async (message, user) => {
     }
 
     if (message._emoji.name !== PIN_EMOJI) return;
+    if (!CHANNEL_WHITELIST.includes(message.message.channel.id)) return;
   } catch (error) {
     return console.log('There was a problem fetching the reaction', error);
   }
